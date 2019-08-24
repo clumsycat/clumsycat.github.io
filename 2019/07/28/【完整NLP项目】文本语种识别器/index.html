@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="【完整NLP项目】文本语种识别器项目背景在拉丁语种环境中，通过朴素贝叶斯完成语种检测分类器 数据介绍 twitter数据，包含English, French, German, Spanish, Italian 和 Dutch 6种语言 每一行数据有两组值：语句，所属语种缩写  11 december wereld aids dag voorlichting in zuidafrika over b">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLP_Language_Detector">
+<meta property="og:url" content="http://yoursite.com/2019/07/28/【完整NLP项目】文本语种识别器/index.html">
+<meta property="og:site_name" content="Ellie">
+<meta property="og:description" content="【完整NLP项目】文本语种识别器项目背景在拉丁语种环境中，通过朴素贝叶斯完成语种检测分类器 数据介绍 twitter数据，包含English, French, German, Spanish, Italian 和 Dutch 6种语言 每一行数据有两组值：语句，所属语种缩写  11 december wereld aids dag voorlichting in zuidafrika over b">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-07T13:50:27.085Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NLP_Language_Detector">
+<meta name="twitter:description" content="【完整NLP项目】文本语种识别器项目背景在拉丁语种环境中，通过朴素贝叶斯完成语种检测分类器 数据介绍 twitter数据，包含English, French, German, Spanish, Italian 和 Dutch 6种语言 每一行数据有两组值：语句，所属语种缩写  11 december wereld aids dag voorlichting in zuidafrika over b">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/28/【完整NLP项目】文本语种识别器/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>NLP_Language_Detector | Ellie</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?f9bae084791105ead37cd7fd3474296a";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ellie</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">soft kitty, warm kitty</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/clumsycat" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+    <div class="reading-progress-bar"></div>
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/28/【完整NLP项目】文本语种识别器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="clumsycat">
+      <meta itemprop="description" content="NLP">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ellie">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">NLP_Language_Detector
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-28 11:26:37" itemprop="dateCreated datePublished" datetime="2019-07-28T11:26:37+08:00">2019-07-28</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-07 21:50:27" itemprop="dateModified" datetime="2019-08-07T21:50:27+08:00">2019-08-07</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ML/" itemprop="url" rel="index"><span itemprop="name">ML</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="【完整NLP项目】文本语种识别器"><a href="#【完整NLP项目】文本语种识别器" class="headerlink" title="【完整NLP项目】文本语种识别器"></a>【完整NLP项目】文本语种识别器</h1><h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>在拉丁语种环境中，通过朴素贝叶斯完成语种检测分类器</p>
+<h2 id="数据介绍"><a href="#数据介绍" class="headerlink" title="数据介绍"></a>数据介绍</h2><ul>
+<li>twitter数据，包含English, French, German, Spanish, Italian 和 Dutch 6种语言</li>
+<li>每一行数据有两组值：语句，所属语种缩写</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 december wereld aids dag voorlichting in zuidafrika over bieten taboes en optimisme,nl1 millón de afectados ante las inundaciones en sri lanka unicef está distribuyendo ayuda de emergencia srilanka,es</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+<h2 id="数据分析与预处理"><a href="#数据分析与预处理" class="headerlink" title="数据分析与预处理"></a>数据分析与预处理</h2><ol>
+<li><p>准确的划分数据，因为数据中很有可能符号混杂，而通过观察发现，每句后两位均为缩写，因此手动划分比按分隔符划分比较好</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lines = in_f.readlines()</span><br><span class="line">dataset = [(line.strip()[:-3], line.strip()[-2:]) for line in lines]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>划分数据后，需要划分训练集与测试集，使用sklearn的train_test_split</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import train_test_split</span><br><span class="line">#python 解压缩写法，x将会是dataset第一个元素，y将会是dataset第二个元素</span><br><span class="line">x, y = zip(*dataset)</span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>预处理使用了去噪数据，去除链接，@圈人 #话题的无意义数据。低噪声的数据是模型有良好表现的前提</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import re</span><br><span class="line">def remove_noise(document):    </span><br><span class="line">    noise_pattern = re.compile(&quot;|&quot;.join([&quot;http\S+&quot;, &quot;\@\w+&quot;, &quot;\#\w+&quot;]))    </span><br><span class="line">    clean_text = re.sub(noise_pattern, &quot;&quot;, document) </span><br><span class="line">    #其中第二个参数可以把匹配项替换为想要的字符串，此处“”是去除</span><br><span class="line">    return clean_text.strip()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h2><h3 id="特征处理即把文本处理为向量的方式"><a href="#特征处理即把文本处理为向量的方式" class="headerlink" title="特征处理即把文本处理为向量的方式"></a>特征处理即把文本处理为向量的方式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BOW/N-gram/TF-IDF/word2vec/word embedding/ELMo/BERT</span><br></pre></td></tr></table></figure>
+
+<h3 id="CountVectorizer"><a href="#CountVectorizer" class="headerlink" title="CountVectorizer"></a>CountVectorizer</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_extraction.text <span class="keyword">import</span> CountVectorizer</span><br><span class="line"><span class="comment">#from sklearn.feature_extraction.text import TfidfVectorizer</span></span><br><span class="line"></span><br><span class="line">vec = CountVectorizer(</span><br><span class="line">    lowercase=<span class="literal">True</span>,     <span class="comment"># 英文文本全小写</span></span><br><span class="line">    analyzer=<span class="string">'char_wb'</span>, <span class="comment"># 逐个字母解析</span></span><br><span class="line">    ngram_range=(<span class="number">1</span>,<span class="number">3</span>),  <span class="comment"># 1=出现的字母以及每个字母出现的次数，2=出现的连续2个字母，和连续2个字母出现的频次</span></span><br><span class="line">    <span class="comment"># trump images are now... =&gt; 1gram = t,r,u,m,p... 2gram = tr,ru,um,mp...</span></span><br><span class="line">    max_features=<span class="number">1000</span>,  <span class="comment"># keep the most common 1000 ngrams</span></span><br><span class="line">    preprocessor=remove_noise</span><br><span class="line">)</span><br><span class="line">vec.fit(x_train)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_features</span><span class="params">(x)</span>:</span></span><br><span class="line">    vec.transform(x)</span><br></pre></td></tr></table></figure>
+
+<pre><code>* lowercase=True 先全部转化为小写
+* analyzer=‘char_wb&apos; 按字母逐个解析，按业务场景和数据特点进行选择，此处是因为不同语种的单词，拼写可能差不多，但是顺序和频次不同，因此可以把分词粒度设置为字母
+* ngram_range: N-gram的范围，最高到3个连续字母
+* max_feature把所有的n-gram统计出的向量表排序取最高频的1000个
+* preprocessor=remove_noise 还可以加预处理函 数，这里加的就是之前实现的用于去除人名，话题列表和链接的函数。 </code></pre><h3 id="TfidfVectorizer-CountVectorizer-TfidfTransformoer"><a href="#TfidfVectorizer-CountVectorizer-TfidfTransformoer" class="headerlink" title="TfidfVectorizer = CountVectorizer + TfidfTransformoer"></a>TfidfVectorizer = CountVectorizer + TfidfTransformoer</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">max_df：float in range [ 0.0，1.0 ]或int，default = 1.0</span><br><span class="line">``` </span><br><span class="line">当构建词汇时，忽略文档频率严格高于给定阈值（语料库特定停止词）的术语。如果为float，则该参数代表一定比例的文档，整数绝对计数。如果词汇不是无，则忽略此参数。</span><br><span class="line"></span><br><span class="line">### 查看分词表</span><br><span class="line">使用Vec.vocabulary_, vec.stop_words_查看分词器的此表和停用词</span><br><span class="line">## 建模的方法</span><br><span class="line">最简单的朴素贝叶斯模型，fit, score</span><br></pre></td></tr></table></figure>
+
+<p>from sklearn.naive_bayes import MultinomialNB<br>classifier = MultinomialNB()<br>classifier.fit(vec.transform(x_train), y_train)<br>classifier.score(vec.transform(x_test), y_test)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 最终效果</span><br><span class="line">## 封装为类LanguageDetector()</span><br><span class="line"></span><br><span class="line">将整个流程封装为一类，便于后续调试，调用</span><br></pre></td></tr></table></figure>
+
+<p>class LanguageDetector():<br>    # 成员函数<br>    def <strong>init</strong>(self, classifier=MultinomialNB()):<br>        self.classifier = classifier<br>        self.vectorizer = CountVectorizer(ngram_range=(1,2), max_features=1000, preprocessor=self._remove_noise)<br><br>    # 私有函数，数据清洗<br>    def _remove_noise(self, document):<br>        noise_pattern = re.compile(“|”.join([“http\S+”, “@\w+”, “#\w+”]))<br>        clean_text = re.sub(noise_pattern, “”, document)<br>        return clean_text<br><br>    # 特征构建<br>    def features(self, X):<br>        return self.vectorizer.transform(X)<br><br>    # 拟合数据<br>    def fit(self, X, y):<br>        self.vectorizer.fit(X)<br>        self.classifier.fit(self.features(X), y)<br><br>    # 预估类别<br>    def predict(self, x):<br>        return self.classifier.predict(self.features([x]))<br><br>    # 测试集评分<br>    def score(self, X, y):<br>        return self.classifier.score(self.features(X), y)<br><br>    # 模型持久化存储<br>    def save_model(self, path):<br>        dump((self.classifier, self.vectorizer), path)<br><br>    # 模型加载<br>    def load_model(self, path):<br>        self.classifier, self.vectorizer = load(path)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## 模型训练与存储-调用类</span><br></pre></td></tr></table></figure>
+
+<p>language_detector = LanguageDetector() 创建<br>language_detector.fit(x_train, y_train) 拟合<br>print(language_detector.predict(‘This is an English sentence’)) 预估<br>print(language_detector.score(x_test, y_test)) 评分<br>language_detector.save_model(model_path) 存储<br>model_path = “model/language_detector.model”<br>new_language_detector = LanguageDetector() 创建新的模型，加载之前存储的模型<br>new_language_detector.load_model(model_path)<br>new_language_detector.predict(“10 der welt sind bei”)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># FLASK</span><br><span class="line">app.py </span><br><span class="line">调用的包 from flask import Flask,render_template,url_for,request</span><br><span class="line">文件内容</span><br><span class="line">```python</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">@app.route(&apos;/&apos;)</span><br><span class="line">def home():</span><br><span class="line">	return render_template(&apos;home.html&apos;)</span><br><span class="line"></span><br><span class="line">@app.route(&apos;/predict&apos;,methods=[&apos;POST&apos;])</span><br><span class="line">def predict():</span><br><span class="line">	model_path = &quot;model/language_detector.model&quot;</span><br><span class="line">	my_language_detector = LanguageDetector()</span><br><span class="line">	my_language_detector.load_model(model_path)</span><br><span class="line"></span><br><span class="line">	if request.method == &apos;POST&apos;:</span><br><span class="line">		message = request.form[&apos;message&apos;]</span><br><span class="line">		my_prediction = my_language_detector.predict(message)</span><br><span class="line">	return render_template(&apos;result.html&apos;,prediction = my_prediction[0])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">	app.run(debug=True)</span><br></pre></td></tr></table></figure>
+
+<p>@app.route(‘’) 设置页面<br>调用方式和python一样，具体参数在 <a href="http://docs.jinkan.org/docs/flask/" target="_blank" rel="noopener">http://docs.jinkan.org/docs/flask/</a></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="clumsycat 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="clumsycat 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/19/Gone_with_the_wind/" rel="next" title="Gone_with_the_wind">
+                <i class="fa fa-chevron-left"></i> Gone_with_the_wind
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/05/Python基础-变量/" rel="prev" title="Python基础-变量">
+                Python基础-变量 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="gitalk-container">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">clumsycat</p>
+  <div class="site-description motion-element" itemprop="description">NLP</div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        
+      </div>
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/clumsycat" title="GitHub &rarr; https://github.com/clumsycat" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:weilu544@gmail.com" title="E-Mail &rarr; mailto:weilu544@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/catleev" title="Weibo &rarr; https://weibo.com/catleev" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#【完整NLP项目】文本语种识别器"><span class="nav-number">1.</span> <span class="nav-text">【完整NLP项目】文本语种识别器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目背景"><span class="nav-number">1.1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据介绍"><span class="nav-number">1.2.</span> <span class="nav-text">数据介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据分析与预处理"><span class="nav-number">1.3.</span> <span class="nav-text">数据分析与预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征工程"><span class="nav-number">1.4.</span> <span class="nav-text">特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征处理即把文本处理为向量的方式"><span class="nav-number">1.4.1.</span> <span class="nav-text">特征处理即把文本处理为向量的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CountVectorizer"><span class="nav-number">1.4.2.</span> <span class="nav-text">CountVectorizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TfidfVectorizer-CountVectorizer-TfidfTransformoer"><span class="nav-number">1.4.3.</span> <span class="nav-text">TfidfVectorizer = CountVectorizer + TfidfTransformoer</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">clumsycat</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '1b0e7b6f738f0f891508',
+    clientSecret: '04b0378629c08f51f865c580e05f52a0739d7959',
+    repo: 'gitalk',
+    owner: 'clumsycat',
+    admin: ['clumsycat'],
+    id: md5(location.pathname),
+    
+      language: 'zh-CN',
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
